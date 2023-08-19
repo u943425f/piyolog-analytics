@@ -5,14 +5,18 @@ import datetime
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 import os
+import sys
 
 # .env ファイルのキーバリューを環境変数に展開
 from dotenv import load_dotenv
 load_dotenv()
 
-DATA_TYPE_MONTHLY = 'monthly'
-DATA_TYPE_DAILY = 'daily'
-DATA_TYPE = DATA_TYPE_DAILY # DATA_TYPE_MONTHLY | DATA_TYPE_DAILY
+args = sys.argv
+if args[0] not in ('daily', 'monthly'):
+    print("invalid argument")
+    sys.exit(1)
+
+DATA_TYPE = args[0]
 
 CN_DATE = 'date' # 日付
 CN_NAP_COUNT = 'nap_count' # 昼寝回数
