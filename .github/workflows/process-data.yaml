@@ -37,4 +37,4 @@ jobs:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
           DATABASE: ${{ secrets.DATABASE }}
-        run: python ./process-data.py monthly
+        run: python ./process-data.py daily
