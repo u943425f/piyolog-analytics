@@ -113,12 +113,18 @@ def insert_to_db(df: pd.DataFrame):
     engine = create_engine(url, connect_args=ssl_args)
 
     # DB の stats テーブルに INSERT
+    # if_exists=appendは、「重複した行は更新する」になるはずだが、うまく動かない
+    df.to_sql('stats', con=engine, schema=None, if_exists='append', index=False)
+
+    # primary key(日付)が重複していたらテーブルを一旦ドロップして新規作成する
+    # df.to_sql('stats', con=engine, schema=None, if_exists='replace', index=False)
+    
     # primary key(日付)が重複していたら無視する
-    for i in range(len(df)):
-        try:
-            df.iloc[i:i+1].to_sql('stats', con=engine, schema=None, if_exists='append', index=False)
-        except IntegrityError:
-            pass
+    # for i in range(len(df)):
+    #     try:
+    #         df.iloc[i:i+1].to_sql('stats', con=engine, schema=None, if_exists='append', index=False)
+    #     except IntegrityError:
+    #         pass
 
 def main():
     # 誕生日
