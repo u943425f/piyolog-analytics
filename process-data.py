@@ -96,6 +96,7 @@ def insert_to_db(df: pd.DataFrame):
     # dfからpostgresqlにインサート
     from sqlalchemy.engine.url import URL
     from sqlalchemy.engine.create import create_engine
+    from sqlalchemy.exc import IntegrityError
 
     # DB の接続情報
     url = URL.create(
@@ -112,7 +113,12 @@ def insert_to_db(df: pd.DataFrame):
     engine = create_engine(url, connect_args=ssl_args)
 
     # DB の stats テーブルに INSERT
-    df.to_sql('stats', con=engine, schema=None, if_exists='append', index=False)
+    # primary key(日付)が重複していたら無視する
+    for i in range(len(df)):
+        try:
+            df.iloc[i:i+1].to_sql('stats', con=engine, schema=None, if_exists='append', index=False)
+        except IntegrityError:
+            pass
 
 def main():
     # 誕生日
